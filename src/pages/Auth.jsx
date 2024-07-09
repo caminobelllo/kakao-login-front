@@ -25,6 +25,9 @@ const Auth = () => {
 
       const response = await axiosInstance.post("/auth/kakao/login", {
         access_code: kAKAO_CODE,
+        headers: {
+          "Content-Type": "application/json",
+        },
       });
       const accessToken = response.data.access_token;
       console.log("accessToken: ", accessToken);

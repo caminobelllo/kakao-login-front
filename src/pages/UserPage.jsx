@@ -1,11 +1,28 @@
 import React from "react";
 import styled from "styled-components";
+import { ImHome } from "react-icons/im";
+import { useNavigate } from "react-router-dom";
 
 const UserPage = () => {
+  const navigate = useNavigate();
+
   return (
     <Wrapper>
       <Header>
-        <span>USER PAGE</span>
+        <ImHome
+          size={36}
+          style={{
+            position: "absolute",
+            marginLeft: "48px",
+            cursor: "pointer",
+          }}
+          onClick={() => {
+            navigate("/");
+          }}
+        />
+        <span style={{ position: "absolute", marginLeft: "636px" }}>
+          USER PAGE
+        </span>
       </Header>
 
       <Container>
@@ -29,8 +46,8 @@ const Header = styled.div`
   height: 60px;
   background-color: lightyellow;
   display: flex;
-  justify-content: center;
   align-items: center;
+  position: relative;
 
   span {
     font-size: 24px;
