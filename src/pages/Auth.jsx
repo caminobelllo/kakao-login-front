@@ -1,18 +1,14 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
-import { useRecoilState } from "recoil";
 import { useNavigate } from "react-router-dom";
-import { userInfoState } from "./../atoms/index";
 import { axiosInstance } from "../api";
 
 const Auth = () => {
-  const [userInfo, setUserInfo] = useRecoilState(userInfoState);
   const navigate = useNavigate();
   const PARAMS = new URL(document.location).searchParams;
   const kAKAO_CODE = PARAMS.get("code");
   const [accessTokenFetching, setAccessTokenFetching] = useState(false);
 
-  console.log("KAKAO_CODE (인가 코드)", kAKAO_CODE);
+  console.log("KAKAO_CODE(인가 코드): ", kAKAO_CODE);
 
   // access token 받아오기
   const getAccessToken = async () => {
@@ -29,9 +25,15 @@ const Auth = () => {
           "Content-Type": "application/json",
         },
       });
+
       const accessToken = response.data.access_token;
+      const refreshToken = response.data.refresh_token;
       console.log("accessToken: ", accessToken);
+      localStorage.setItem("access_token", accessToken);
+      localStorage.setItem("refresh_token", refreshToken);
       setAccessTokenFetching(false);
+
+      // 완료 후 유저 페이지로 이동
       navigate("/user");
     } catch (error) {
       console.log("Error: ", error);
@@ -40,12 +42,12 @@ const Auth = () => {
   };
 
   useEffect(() => {
-    if (kAKAO_CODE) {
-      getAccessToken();
-    }
-  }, [kAKAO_CODE]);
+    getAccessToken();
+  }, [accessTokenFetching]);
 
-  return <div>Auth</div>;
+  return (
+    <div>{accessTokenFetching === false ? <span>Loading...</span> : null}</div>
+  );
 };
 
 export default Auth;

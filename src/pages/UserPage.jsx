@@ -1,10 +1,56 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import { ImHome } from "react-icons/im";
 import { useNavigate } from "react-router-dom";
+import { axiosInstance } from "../api";
+import { useRecoilState } from "recoil";
+import { userInfoState } from "./../atoms/index";
 
 const UserPage = () => {
   const navigate = useNavigate();
+  const [verifyState, setVerifyState] = useState(false);
+  const [userInfo, setUserInfo] = useRecoilState(userInfoState);
+
+  const verifyJwt = async () => {
+    try {
+      const verifyResponse = await axiosInstance.get("/auth/verify", {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("access_token")}`,
+        },
+      });
+      setVerifyState(true);
+      console.log(verifyResponse.data);
+    } catch {
+      alert("로그인이 필요한 페이지입니다!");
+      navigate("/");
+    }
+  };
+
+  const getInfo = async () => {
+    try {
+      const response = await axiosInstance.get("/users", {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("access_token")}`,
+        },
+      });
+      console.log("user response data: ", response.data);
+
+      setUserInfo(response.data);
+
+      console.log("user info: ", userInfo);
+    } catch (error) {
+      console.log("user data 받아올 수 없음", error);
+    }
+  };
+
+  const logout = () => {
+    localStorage.clear();
+  };
+
+  useEffect(() => {
+    verifyJwt();
+    getInfo();
+  }, []);
 
   return (
     <Wrapper>
@@ -25,12 +71,14 @@ const UserPage = () => {
         </span>
       </Header>
 
-      <Container>
-        <UserInfo>
-          <span>안녕하세요 ㅇㅇㅇ님 !</span>
-        </UserInfo>
-        <Button>로그아웃</Button>
-      </Container>
+      {verifyState && (
+        <Container>
+          <UserInfo>
+            <span>안녕하세요 {userInfo.nickname}님 !</span>
+          </UserInfo>
+          <Button onClick={logout}>로그아웃</Button>
+        </Container>
+      )}
     </Wrapper>
   );
 };
