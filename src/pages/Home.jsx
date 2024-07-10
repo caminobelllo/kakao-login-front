@@ -1,14 +1,40 @@
-import React from "react";
+import React, { useEffect } from "react";
 import KakaoLogin from "../components/KakaoLogin";
 import styled from "styled-components";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const Home = () => {
+  const [loginState, setLoginState] = useState(false);
+  const navigate = useNavigate();
+
+  const checkLoginState = () => {
+    if (localStorage.getItem("accessToken")) {
+      setLoginState(true);
+    }
+  };
+
+  useEffect(() => {
+    checkLoginState();
+  }, []);
+
   return (
     <Wrapper>
       <PageText>Homepage</PageText>
-      <LoginBtn>
-        <KakaoLogin />
-      </LoginBtn>
+      {loginState ? (
+        <button
+          style={{ marginTop: "60px" }}
+          onClick={() => {
+            navigate("/user");
+          }}
+        >
+          USER PAGE
+        </button>
+      ) : (
+        <LoginBtn>
+          <KakaoLogin />
+        </LoginBtn>
+      )}
     </Wrapper>
   );
 };

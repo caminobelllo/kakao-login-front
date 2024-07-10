@@ -15,7 +15,7 @@ const UserPage = () => {
     try {
       const verifyResponse = await axiosInstance.get("/auth/verify", {
         headers: {
-          Authorization: `Bearer ${localStorage.getItem("access_token")}`,
+          Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
         },
       });
       setVerifyState(true);
@@ -30,7 +30,7 @@ const UserPage = () => {
     try {
       const response = await axiosInstance.get("/users", {
         headers: {
-          Authorization: `Bearer ${localStorage.getItem("access_token")}`,
+          Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
         },
       });
       console.log("user response data: ", response.data);
