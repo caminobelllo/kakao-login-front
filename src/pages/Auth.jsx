@@ -15,15 +15,13 @@ const Auth = () => {
 
   const sendCodeToServer = async () => {
     try {
-      const response = await axiosInstance.post("/auth/kakao/register", {
+      const response = await axiosInstance.post("/auth/kakao/login", {
         access_code: kAKAO_CODE,
-        description: "hello",
         headers: {
           "Content-Type": "application/json",
         },
       });
       if (response.status === 200) {
-        // 처음 로그인한 유저
         console.log(response.data);
         const accessToken = response.data.access_token;
         const refreshToken = response.data.refresh_token;
@@ -33,11 +31,12 @@ const Auth = () => {
       }
     } catch (e) {
       console.log("error");
-
-      if (e.response.status === 400) {
+      // 존재하지 않는 사용자
+      if (e.response.status === 404) {
         try {
-          const response = await axiosInstance.post("/auth/kakao/login", {
+          const response = await axiosInstance.post("/auth/kakao/register", {
             access_code: kAKAO_CODE,
+            description: "hello",
             headers: {
               "Content-Type": "application/json",
             },
